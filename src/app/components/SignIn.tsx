@@ -1,11 +1,40 @@
+'use client'
 import { Lato, Montserrat } from "next/font/google";
 import Image from "next/image";
+import { useState } from "react";
 import Login from "./Login";
+import {signIn} from "next-auth/react"
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const lato = Lato({ weight: ['400'], subsets: ['latin'] });
 const mont = Montserrat({ weight: ['700'], subsets: ['latin'] })
 
 export const SignIn = () => {
+
+    const [isLoading, setisLoading] = useState<boolean>(false);
+    const router = useRouter();
+
+    const googleSignIn = async() => {
+        setisLoading(true)
+
+        try {
+
+            const result = await signIn('google')
+            if (result?.error) {
+                console.log(Error);
+            }
+            else {
+                router.push('/dashboard')
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+        finally {
+            setisLoading(false)
+        }
+    }
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3">
             <div className="bg-black col-span-1 items-center justify-center">
@@ -23,11 +52,11 @@ export const SignIn = () => {
                     </div>
 
                     <div className="flex flex-row mt-4 gap-3 font-extralight text-sm text-gray-400">
-                        <button className="flex gap-2 px-5 bg-white py-2 rounded-[12px]">
+                        <button onClick={googleSignIn}  className="flex gap-2 px-5 bg-white py-2 rounded-[12px]">
                             <Image src="/google_icon.png" alt="google icon" width={20} height={2} />
                             <h3 className="text-sm">sign in with google</h3>
                         </button>
-                         <button className="flex gap-2 px-5 bg-white py-2 rounded-[12px]">
+                        <button onClick={() => router.push('/dashboard')} className="flex gap-2 px-5 bg-white py-2 rounded-[12px]">
                             <Image src="/apple_icon.png" alt="google icon" width={20} height={4} />
                             <h3 className="text-sm">sign in with apple</h3>
                         </button>
